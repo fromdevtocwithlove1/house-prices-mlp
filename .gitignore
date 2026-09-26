@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.ipynb_checkpoints/
+*.py[cod]
+*.log
+models/*.pt
+models/**/*.pt
+models/**/*.joblib
+outputs/figures/*.png
+outputs/metrics/*.csv
+outputs/submission.csv
+notebooks/*-executed.ipynb

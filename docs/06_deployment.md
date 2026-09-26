@@ -1,0 +1,9 @@
+# Deployment and Kaggle Submission
+
+The final run selects the lowest validation RMSE in `outputs/metrics/experiments.csv`, retrains that configuration with seed 42 on the same 80% training fold, retains the same 20% validation fold for early stopping, and stores `models/final/best_mlp.pt` and `models/final/preprocessor.joblib`. Neither transformer nor model is refit on validation or test rows. This preserves a measurable holdout score; it sacrifices some possible benefit from fitting all labeled data.
+
+Run `python scripts/run_train.py --final`, then `python scripts/run_predict.py`. Prediction loads the fitted transformer and best checkpoint, processes test rows in source order, predicts log prices, applies `expm1`, and writes `outputs/submission.csv`. Before writing, it checks the row count, exact `Id,SalePrice` columns, original Id order, finite values, and nonnegative prices. Negative inverse predictions, if any, are clamped to zero and counted.
+
+The user reported submitting the generated CSV to Kaggle and receiving a score of **0.13543** on 2026-09-26. The report is recorded in `plan.md`; no submission ID or leaderboard screenshot is available in this workspace for independent verification.
+
+The verified local run selected E0, reached validation RMSE 0.133316 at epoch 3, and wrote 1,459 submission rows. The final run has its own `outputs/metrics/final_history.csv` and `outputs/figures/final_*.png`, so it does not overwrite E0 experiment results. The saved CSV was reopened and checked against `test.csv`: columns and Id order match, all prices are finite and nonnegative, range 49,901.78–767,002.19, and no value required clipping. The installed PyTorch wheel is CPU-only, so the final run used CPU. The user-reported Kaggle score is **0.13543**; local validation and Kaggle use different samples.
